@@ -1,12 +1,15 @@
 package bassi.itau_unibanco.exerc5_itau_unibanco.service;
 
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoRequest;
+import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoResponse;
 import bassi.itau_unibanco.exerc5_itau_unibanco.exception.ProdutoNaoEncontradoException;
 import bassi.itau_unibanco.exerc5_itau_unibanco.mapper.ProdutoMapper;
 import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import bassi.itau_unibanco.exerc5_itau_unibanco.producer.CadastroProdutoProducer;
+import bassi.itau_unibanco.exerc5_itau_unibanco.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -17,14 +20,20 @@ public class ProdutoService {
 
     private final List<ProdutoModel> produtos;
 
+    private final ProdutoRepository repository;
+
     private final ProdutoMapper mapper;
 
     private final CadastroProdutoProducer producer;
 
     private final AtomicLong nextId = new AtomicLong(1);
 
-    public List<ProdutoModel> listar() {
-        return produtos;
+    @Transactional(readOnly = true)
+    public List<ProdutoResponse> listar() {
+        return this.repository.findAll()
+                .stream()
+                .map(this.mapper::mapToProdutoResponse)
+                .toList();
     }
 
     public ProdutoModel listarPeloId(Long id) {
@@ -34,11 +43,11 @@ public class ProdutoService {
                 .orElseThrow(() -> new ProdutoNaoEncontradoException(id));
     }
 
-    public ProdutoModel cadastrar(ProdutoRequest produtoRequest) {
-        var produto = this.mapper.mapToProdutoModel(produtoRequest, nextId.getAndIncrement());
-        this.produtos.add(produto);
-        this.producer.sendMessage(produto);
-        return produto;
+    @Transactional
+    public ProdutoResponse cadastrar(ProdutoRequest produtoRequest) {
+        var entity = this.repository.save(this.mapper.mapToProdutoEntity(produtoRequest));
+        this.producer.sendMessage(entity);
+        return this.mapper.mapToProdutoResponse(entity);
     }
 
     public ProdutoModel atualizar(Long id, ProdutoRequest produtoRequest) {

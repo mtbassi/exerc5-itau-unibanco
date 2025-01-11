@@ -1,6 +1,8 @@
 package bassi.itau_unibanco.exerc5_itau_unibanco.controller;
 
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoRequest;
+import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoResponse;
+import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
 import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import bassi.itau_unibanco.exerc5_itau_unibanco.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +31,7 @@ public class ProdutoController {
             description = "Retorna uma lista completa de todos os produtos cadastrados na plataforma.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Lista de produtos retornada com sucesso.",
-                            content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProdutoModel.class)))),
+                            content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProdutoResponse.class)))),
                     @ApiResponse(responseCode = "400", description = "Requisição com parâmetros inválidos.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor.",
@@ -37,7 +39,7 @@ public class ProdutoController {
             })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProdutoModel> listar() {
+    public List<ProdutoResponse> listar() {
         return this.service.listar();
     }
 
@@ -64,7 +66,7 @@ public class ProdutoController {
             description = "Realiza o cadastro de um novo produto utilizando os dados fornecidos no corpo da requisição.",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Produto cadastrado com sucesso.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoModel.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Requisição com parâmetros inválidos.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
                     @ApiResponse(responseCode = "422", description = "Dados inválidos ou ausentes no cadastro.",
@@ -74,7 +76,7 @@ public class ProdutoController {
             })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProdutoModel cadastrar(@RequestBody @Valid ProdutoRequest data) {
+    public ProdutoResponse cadastrar(@RequestBody @Valid ProdutoRequest data) {
         return this.service.cadastrar(data);
     }
 
