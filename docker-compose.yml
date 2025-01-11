@@ -20,11 +20,11 @@ services:
       - springboot-mq-net
 
   app:
-    image: exerc3-itau-unibanco-image
+    image: exerc5-itau-unibanco-image
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: exerc3-itau-unibanco
+    container_name: exerc5-itau-unibanco
     depends_on:
       rabbitmq:
         condition: service_healthy

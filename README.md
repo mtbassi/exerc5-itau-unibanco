@@ -44,8 +44,8 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
 ### Passos
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/mtbassi/exerc3-itau-unibanco.git
-   cd exerc3-itau-unibanco
+   git clone https://github.com/mtbassi/exerc5-itau-unibanco.git
+   cd exerc5-itau-unibanco
    ```
 
 2. Compile o projeto:
@@ -169,7 +169,7 @@ O arquivo do pipeline está disponível em `.github/workflows/ci.yml`.
 
 Após a execução da pipeline, um relatório de testes gerado com Allure é publicado automaticamente no GitHub Pages. Você pode acessá-lo em:
 
-- [`https://mtbassi.github.io/exerc3-itau-unibanco/`](https://mtbassi.github.io/exerc3-itau-unibanco/)
+- [`https://mtbassi.github.io/exerc5-itau-unibanco/`](https://mtbassi.github.io/exerc5-itau-unibanco/)
 
 ---
 

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: exerc3-itau-unibanco
+    name: exerc5-itau-unibanco
     version: v0.0.1
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
