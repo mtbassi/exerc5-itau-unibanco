@@ -4,6 +4,7 @@ import bassi.itau_unibanco.exerc3_itau_unibanco.dto.ProdutoRequest;
 import bassi.itau_unibanco.exerc3_itau_unibanco.exception.ProdutoNaoEncontradoException;
 import bassi.itau_unibanco.exerc3_itau_unibanco.mapper.ProdutoMapper;
 import bassi.itau_unibanco.exerc3_itau_unibanco.model.ProdutoModel;
+import bassi.itau_unibanco.exerc3_itau_unibanco.producer.CadastroProdutoProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ public class ProdutoService {
     private final List<ProdutoModel> produtos;
 
     private final ProdutoMapper mapper;
+
+    private final CadastroProdutoProducer producer;
 
     private final AtomicLong nextId = new AtomicLong(1);
 
@@ -34,6 +37,7 @@ public class ProdutoService {
     public ProdutoModel cadastrar(ProdutoRequest produtoRequest) {
         var produto = this.mapper.mapToProdutoModel(produtoRequest, nextId.getAndIncrement());
         this.produtos.add(produto);
+        this.producer.sendMessage(produto);
         return produto;
     }
 
