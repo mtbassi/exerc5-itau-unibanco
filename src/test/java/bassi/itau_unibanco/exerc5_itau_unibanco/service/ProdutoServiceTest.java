@@ -5,7 +5,6 @@ import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoStub;
 import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
 import bassi.itau_unibanco.exerc5_itau_unibanco.exception.ProdutoNaoEncontradoException;
 import bassi.itau_unibanco.exerc5_itau_unibanco.mapper.ProdutoMapper;
-import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import bassi.itau_unibanco.exerc5_itau_unibanco.producer.CadastroProdutoProducer;
 import bassi.itau_unibanco.exerc5_itau_unibanco.repository.ProdutoRepository;
 import io.qameta.allure.Description;
@@ -13,18 +12,19 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,55 +35,39 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class ProdutoServiceTest {
 
+    @InjectMocks
     private ProdutoService service;
-
-    private final List<ProdutoModel> produtos = new ArrayList<>(Arrays.asList(
-            ProdutoStub.buildProdutoModel(10L, "Cartão PJ", BigDecimal.valueOf(50.00), "PJ"),
-            ProdutoStub.buildProdutoModel(20L, "Empréstimo PJ", BigDecimal.valueOf(300.00), "PJ")
-    ));
 
     @Mock
     private ProdutoRepository repository;
 
-    @Spy
-    private final ProdutoMapper mapper = Mappers.getMapper(ProdutoMapper.class);
-
     @Mock
     private CadastroProdutoProducer producer;
 
-    @BeforeEach
-    void setUp() {
-        this.service = Mockito.mock(
-                ProdutoService.class,
-                withSettings().useConstructor(
-                                produtos,
-                                repository,
-                                mapper,
-                                producer
-                        )
-                        .defaultAnswer(Mockito.CALLS_REAL_METHODS)
-        );
-    }
+    @Spy
+    private final ProdutoMapper mapper = Mappers.getMapper(ProdutoMapper.class);
 
     @Test
     @Story("Testar a Listagem de Produtos")
     @Description("Este teste verifica se o serviço de produtos retorna corretamente uma lista de produtos cadastrados.")
     @DisplayName("Deve retornar todos os produtos cadastrados.")
     void listarProdutos_DeveRetornarListaDeProdutos() {
-        var produtosList = List.of(
-                ProdutoStub.buildProdutoEntity(UUID.randomUUID(), "Cartão PJ", BigDecimal.TEN, "PJ"),
-                ProdutoStub.buildProdutoEntity(UUID.randomUUID(), "Empréstimo PJ", BigDecimal.TEN, "PJ")
+        var produtoEntities = List.of(
+                ProdutoStub.buildProdutoEntity(UUID.fromString("32c6fc74-42f1-4edd-a6fa-3e137512cdcc"), "Cartão PJ", BigDecimal.TEN, "PJ"),
+                ProdutoStub.buildProdutoEntity(UUID.fromString("1f0ab96e-a2de-4005-9013-95ff12aa89cc"), "Empréstimo PJ", BigDecimal.TEN, "PJ")
         );
-        when(this.repository.findAll()).thenReturn(produtosList);
+        var resultadoEsperado = List.of(
+                ProdutoStub.buildProdutoResponse(UUID.fromString("32c6fc74-42f1-4edd-a6fa-3e137512cdcc"), "Cartão PJ", BigDecimal.TEN, "PJ"),
+                ProdutoStub.buildProdutoResponse(UUID.fromString("1f0ab96e-a2de-4005-9013-95ff12aa89cc"), "Empréstimo PJ", BigDecimal.TEN, "PJ")
+        );
+
+        when(this.repository.findAll()).thenReturn(produtoEntities);
+
         var result = Assertions.assertDoesNotThrow(() -> this.service.listar());
 
         assertFalse(result.isEmpty());
         assertEquals(2, result.size());
-        //TODO: Investigar comportamento
-/*        assertThat(result, containsInAnyOrder(
-                HasPropertyWithValue.hasProperty("nome", is("Cartão PJ")),
-                HasPropertyWithValue.hasProperty("nome", is("Empréstimo PJ"))
-        ));*/
+        assertEquals(resultadoEsperado, result);
 
         verify(this.repository).findAll();
         verify(this.mapper, times(2)).mapToProdutoResponse(any(ProdutoEntity.class));
