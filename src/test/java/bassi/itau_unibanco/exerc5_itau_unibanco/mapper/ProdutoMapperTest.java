@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,34 +28,18 @@ class ProdutoMapperTest {
     private ProdutoMapper mapper;
 
     @Test
-    @Story("Mapear ProdutoRequest para ProdutoModel")
-    @Description("Verifica se o método mapToProdutoModel converte corretamente um ProdutoRequest em ProdutoModel, preservando os valores e adicionando o ID.")
-    @DisplayName("Deve mapear ProdutoRequest para ProdutoModel corretamente.")
-    void mapearProdutoRequestParaProdutoModel_DeveRetornarObjetoCorreto() {
-        var produtoRequest = ProdutoStub.buildProdutoRequest("Cartão PJ", BigDecimal.valueOf(50.00), "PJ");
-
-        var produtoModel = Assertions.assertDoesNotThrow(() -> this.mapper.mapToProdutoModel(produtoRequest, 1L));
-
-        assertNotNull(produtoModel);
-        assertEquals(1L, produtoModel.getId());
-        assertEquals("Cartão PJ", produtoModel.getNome());
-        assertEquals(BigDecimal.valueOf(50.00), produtoModel.getPreco());
-        assertEquals("PJ", produtoModel.getCategoria());
-    }
-
-    @Test
-    @Story("Atualizar ProdutoModel com ProdutoRequest")
-    @Description("Valida se o método mapToProdutoModel atualiza corretamente um ProdutoModel existente com informações de um ProdutoRequest.")
+    @Story("Atualizar ProdutoEntity com ProdutoRequest")
+    @Description("Valida se o método mapToProdutoEntity atualiza corretamente um ProdutoModel existente com informações de um ProdutoRequest.")
     @DisplayName("Deve atualizar ProdutoModel com informações do ProdutoRequest.")
     void atualizarProdutoModelComProdutoRequest_DeveAtualizarCorretamente() {
         var produtoRequest = ProdutoStub.buildProdutoRequest("Cartão PJ", BigDecimal.valueOf(50.00), "PJ");
-        var produtoModel = ProdutoStub.buildProdutoModel(1L, "Cartão PF", BigDecimal.valueOf(25.00), "PF");
-        Assertions.assertDoesNotThrow(() -> this.mapper.mapToProdutoModel(produtoRequest, produtoModel));
+        var produtoEntity = ProdutoStub.buildProdutoEntity(UUID.fromString("850db7cf-d747-4dff-8041-426885842420"), "Cartão PF", BigDecimal.valueOf(25.00), "PF");
+        Assertions.assertDoesNotThrow(() -> this.mapper.mapToProdutoEntity(produtoRequest, produtoEntity));
 
-        assertNotNull(produtoModel);
-        assertEquals(1L, produtoModel.getId());
-        assertEquals("Cartão PJ", produtoModel.getNome());
-        assertEquals(BigDecimal.valueOf(50.00), produtoModel.getPreco());
-        assertEquals("PJ", produtoModel.getCategoria());
+        assertNotNull(produtoEntity);
+        assertEquals("850db7cf-d747-4dff-8041-426885842420", produtoEntity.getId().toString());
+        assertEquals("Cartão PJ", produtoEntity.getNome());
+        assertEquals(BigDecimal.valueOf(50.00), produtoEntity.getPreco());
+        assertEquals("PJ", produtoEntity.getCategoria());
     }
 }

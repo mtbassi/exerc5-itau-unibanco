@@ -158,18 +158,26 @@ class ProdutoServiceTest {
     @Description("Este teste verifica se o serviço de produtos consegue atualizar corretamente um produto existente e retorna os novos dados.")
     @DisplayName("Deve atualizar produto e retornar produto com novos dados.")
     void atualizarProduto_DeveRetornarProdutoAtualizado() {
-        var result = Assertions.assertDoesNotThrow(() -> this.service.atualizar(10L,
+        when(this.repository.findById(any(UUID.class))).thenReturn(Optional.of(ProdutoStub.validProdutoEntity()));
+        when(repository.save(any(ProdutoEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var result = Assertions.assertDoesNotThrow(() -> this.service.atualizar(
+                UUID.fromString("1429f29a-a611-4212-8418-39df2e8abe5c"),
                 ProdutoStub.buildProdutoRequest("Cartão PF", BigDecimal.valueOf(25.00), "PF")
         ));
 
         assertNotNull(result);
-        assertEquals(10L, result.getId());
-        assertEquals("Cartão PF", result.getNome());
-        assertEquals(BigDecimal.valueOf(25.00), result.getPreco());
-        assertEquals("PF", result.getCategoria());
+        assertEquals(UUID.fromString("1429f29a-a611-4212-8418-39df2e8abe5c"), result.id());
+        assertEquals("Cartão PF", result.nome());
+        assertEquals(BigDecimal.valueOf(25.00), result.preco());
+        assertEquals("PF", result.categoria());
 
-        verify(this.mapper).mapToProdutoModel(any(ProdutoRequest.class), any(ProdutoModel.class));
+        verify(this.mapper).mapToProdutoEntity(any(ProdutoRequest.class), any(ProdutoEntity.class));
+        verify(this.mapper).mapToProdutoResponse(any(ProdutoEntity.class));
+        verify(this.repository).findById(any(UUID.class));
+        verify(this.repository).save(any(ProdutoEntity.class));
         verifyNoMoreInteractions(this.mapper);
+        verifyNoMoreInteractions(this.repository);
     }
 
     @Test
@@ -177,15 +185,20 @@ class ProdutoServiceTest {
     @Description("Este teste verifica se o serviço de produtos lança uma exceção quando tenta atualizar um produto com um ID inexistente.")
     @DisplayName("Deve falhar ao atualizar produto quando ID não for encontrado.")
     void atualizarProduto_DeveFalharQuandoIdNaoForEncontrado() {
+        when(this.repository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
         var produtoRequest = ProdutoStub.buildProdutoRequest("Cartão PF", BigDecimal.valueOf(25.00), "PF");
+        var id = UUID.randomUUID();
         var result = Assertions.assertThrows(ProdutoNaoEncontradoException.class, () -> this.service.atualizar(
-                100L,
+                id,
                 produtoRequest
         ));
 
         assertNotNull(result);
-        assertEquals("Produto não encontrado pelo id 100.", result.getMessage());
+        assertEquals("Produto não encontrado pelo id %s.".formatted(id), result.getMessage());
 
+        verify(this.repository).findById(any(UUID.class));
+        verifyNoMoreInteractions(this.repository);
         verifyNoInteractions(this.mapper);
     }
 

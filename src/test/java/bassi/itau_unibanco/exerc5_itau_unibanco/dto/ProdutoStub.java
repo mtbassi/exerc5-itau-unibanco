@@ -34,8 +34,8 @@ public class ProdutoStub {
         return new ProdutoResponse(UUID.fromString("1429f29a-a611-4212-8418-39df2e8abe5c"), "nome", BigDecimal.valueOf(10.00), "categoria");
     }
 
-    public static ProdutoModel toProdutoModel(ProdutoRequest data) {
-        return new ProdutoModel(1L, data.nome(), data.preco(), data.categoria());
+    public static ProdutoEntity validProdutoEntity() {
+        return new ProdutoEntity(UUID.fromString("1429f29a-a611-4212-8418-39df2e8abe5c"), "nome", BigDecimal.valueOf(10.00), "categoria");
     }
 
     public static ProdutoResponse toProdutoResponse(ProdutoRequest data, UUID id) {

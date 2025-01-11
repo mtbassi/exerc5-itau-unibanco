@@ -3,7 +3,6 @@ package bassi.itau_unibanco.exerc5_itau_unibanco.mapper;
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoRequest;
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoResponse;
 import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
-import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -15,8 +14,6 @@ public interface ProdutoMapper {
     ProdutoEntity mapToProdutoEntity(ProdutoRequest data);
 
     ProdutoResponse mapToProdutoResponse(ProdutoEntity data);
-
-    ProdutoModel mapToProdutoModel(ProdutoRequest data, long id);
 
     @Mapping(target = "id", ignore = true)
     void mapToProdutoEntity(ProdutoRequest produtoRequest, @MappingTarget ProdutoEntity produtoAtual);

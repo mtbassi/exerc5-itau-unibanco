@@ -212,22 +212,28 @@ class ProdutoControllerTest {
     @Description("Valida que o sistema é capaz de atualizar as informações de um produto existente com sucesso, utilizando dados válidos.")
     @DisplayName("Deve atualizar produto com sucesso")
     void atualizarProduto_DeveAtualizarComSucesso(String name, ProdutoRequest payload) {
-        var produtoAtual = ProdutoStub.valid();
-        this.mapper.mapToProdutoModel(payload, produtoAtual);
+        var produtoAtual = ProdutoStub.validProdutoEntity();
+        this.mapper.mapToProdutoEntity(payload, produtoAtual);
 
-        when(this.service.atualizar(anyLong(), any(ProdutoRequest.class))).thenReturn(produtoAtual);
+        when(this.service.atualizar(any(UUID.class), any(ProdutoRequest.class)))
+                .thenReturn(ProdutoStub.buildProdutoResponse(
+                        UUID.fromString("1429f29a-a611-4212-8418-39df2e8abe5c"),
+                        produtoAtual.getNome(),
+                        produtoAtual.getPreco(),
+                        produtoAtual.getCategoria()
+                ));
 
-        this.mockMvc.perform(put(URI_BASE.concat("/1"))
+        this.mockMvc.perform(put(URI_BASE.concat("/1429f29a-a611-4212-8418-39df2e8abe5c"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsBytes(payload))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(produtoAtual.getId()))
+                .andExpect(jsonPath("$.id").value(produtoAtual.getId().toString()))
                 .andExpect(jsonPath("$.nome").value(produtoAtual.getNome()))
                 .andExpect(jsonPath("$.preco").value(produtoAtual.getPreco()))
                 .andExpect(jsonPath("$.categoria").value(produtoAtual.getCategoria()));
 
-        verify(this.service).atualizar(anyLong(), any(ProdutoRequest.class));
+        verify(this.service).atualizar(any(UUID.class), any(ProdutoRequest.class));
     }
 
     private static Stream<Arguments> buildProdutoRequestSucessoTest() {
@@ -254,7 +260,7 @@ class ProdutoControllerTest {
     @Description("Valida que o sistema retorna um erro ao tentar atualizar um produto com dados inválidos.")
     @DisplayName("Deve falhar ao atualizar produto com dados inválidos")
     void atualizarProduto_DeveFalharQuandoDadosInvalidos(String name, ProdutoRequest payload, List<String> parametrosInvalidos) {
-        this.mockMvc.perform(put(URI_BASE.concat("/1"))
+        this.mockMvc.perform(put(URI_BASE.concat("/32c6fc74-42f1-4edd-a6fa-3e137512cdcc"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsBytes(payload))
                 )
@@ -266,12 +272,13 @@ class ProdutoControllerTest {
     }
 
     @SneakyThrows
-    @Test
+    @ParameterizedTest(name = "Busca realizado com ID: {0}")
     @Story("Atualizar Produto")
     @Description("Valida que o sistema retorna erro ao tentar atualizar um produto com uma variável de caminho inválida.")
+    @ValueSource(strings = {"1208", "ddd", "null"})
     @DisplayName("Deve falhar ao atualizar produto com path variable inválido")
-    void atualizarProduto_DeveLancarErroComPathVariableInvalido() {
-        this.mockMvc.perform(put(URI_BASE.concat("/null"))
+    void atualizarProduto_DeveLancarErroComPathVariableInvalido(String id) {
+        this.mockMvc.perform(put(URI_BASE.concat("/%s".formatted(id)))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsBytes(ProdutoStub.valid()))
                 )
