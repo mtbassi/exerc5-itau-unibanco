@@ -207,7 +207,15 @@ class ProdutoServiceTest {
     @Description("Este teste verifica se o serviço de produtos consegue excluir um produto com sucesso, sem retornar conteúdo após a exclusão.")
     @DisplayName("Deve deletar produto e não retornar conteúdo.")
     void deletarProduto_DeveExcluirComSucessoSemConteudo() {
-        Assertions.assertDoesNotThrow(() -> this.service.deletar(10L));
+        when(this.repository.findById(any(UUID.class))).thenReturn(Optional.of(ProdutoStub.validProdutoEntity()));
+        doNothing().when(this.repository).delete(any(ProdutoEntity.class));
+
+        var id = UUID.randomUUID();
+        Assertions.assertDoesNotThrow(() -> this.service.deletar(id));
+
+        verify(this.repository).findById(any(UUID.class));
+        verify(this.repository).delete(any(ProdutoEntity.class));
+        verifyNoMoreInteractions(this.repository);
     }
 
     @Test
@@ -215,9 +223,15 @@ class ProdutoServiceTest {
     @Description("Este teste verifica se o serviço de produtos lança uma exceção quando tenta excluir um produto com um ID inexistente.")
     @DisplayName("Deve falhar ao deletar produto quando ID não for encontrado.")
     void deletarProduto_DeveLancarErroQuandoIdNaoForEncontrado() {
-        var result = Assertions.assertThrows(ProdutoNaoEncontradoException.class, () -> this.service.deletar(100L));
+        when(this.repository.findById(any(UUID.class))).thenReturn(Optional.empty());
+
+        var id = UUID.randomUUID();
+        var result = Assertions.assertThrows(ProdutoNaoEncontradoException.class, () -> this.service.deletar(id));
 
         assertNotNull(result);
-        assertEquals("Produto não encontrado pelo id 100.", result.getMessage());
+        assertEquals("Produto não encontrado pelo id %s.".formatted(id), result.getMessage());
+
+        verify(this.repository).findById(any(UUID.class));
+        verifyNoMoreInteractions(this.repository);
     }
 }

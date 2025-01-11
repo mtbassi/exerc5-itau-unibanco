@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -295,23 +294,24 @@ class ProdutoControllerTest {
     @Description("Valida que o sistema exclui um produto com sucesso ao fornecer um ID válido.")
     @DisplayName("Deve excluir produto com sucesso")
     void deletarProduto_DeveExcluirComSucesso() {
-        doNothing().when(this.service).deletar(anyLong());
+        doNothing().when(this.service).deletar(any(UUID.class));
 
-        this.mockMvc.perform(delete(URI_BASE.concat("/1"))
+        this.mockMvc.perform(delete(URI_BASE.concat("/b740f1ae-d20a-4188-bd9d-32a765426b2b"))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNoContent());
 
-        verify(this.service).deletar(anyLong());
+        verify(this.service).deletar(any(UUID.class));
     }
 
     @SneakyThrows
-    @Test
+    @ParameterizedTest(name = "Busca realizado com ID: {0}")
     @Story("Deletar Produto")
     @Description("Valida que o sistema retorna erro ao tentar excluir um produto com uma variável de caminho inválida.")
+    @ValueSource(strings = {"1208", "ddd", "null"})
     @DisplayName("Deve falhar ao excluir produto com path variable inválido")
-    void deletarProduto_DeveFalharComPathVariableInvalido() {
-        this.mockMvc.perform(delete(URI_BASE.concat("/null"))
+    void deletarProduto_DeveFalharComPathVariableInvalido(String id) {
+        this.mockMvc.perform(delete(URI_BASE.concat("/%s".formatted(id)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest())
