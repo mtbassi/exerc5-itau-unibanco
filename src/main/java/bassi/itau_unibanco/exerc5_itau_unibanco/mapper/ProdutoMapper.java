@@ -19,5 +19,5 @@ public interface ProdutoMapper {
     ProdutoModel mapToProdutoModel(ProdutoRequest data, long id);
 
     @Mapping(target = "id", ignore = true)
-    void mapToProdutoModel(ProdutoRequest produtoRequest, @MappingTarget ProdutoModel produtoAtual);
+    void mapToProdutoEntity(ProdutoRequest produtoRequest, @MappingTarget ProdutoEntity produtoAtual);
 }

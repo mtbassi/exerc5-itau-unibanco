@@ -2,8 +2,6 @@ package bassi.itau_unibanco.exerc5_itau_unibanco.controller;
 
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoRequest;
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoResponse;
-import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
-import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import bassi.itau_unibanco.exerc5_itau_unibanco.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -86,7 +84,7 @@ public class ProdutoController {
             description = "Atualiza as informações de um produto com base no ID fornecido.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoModel.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Requisição com parâmetros inválidos.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
                     @ApiResponse(responseCode = "422", description = "Produto não encontrado para o ID fornecido.",
@@ -96,7 +94,7 @@ public class ProdutoController {
             })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProdutoModel atualizar(@PathVariable Long id, @RequestBody @Valid ProdutoRequest data) {
+    public ProdutoResponse atualizar(@PathVariable UUID id, @RequestBody @Valid ProdutoRequest data) {
         return this.service.atualizar(id, data);
     }
 
