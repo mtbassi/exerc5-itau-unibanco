@@ -15,6 +15,17 @@ spring:
           initial-interval: 1000
           multiplier: 2.0
           max-interval: 5000
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/itauunibancodb}
+    username: ${SPRING_DATASOURCE_USERNAME:user}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 3
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
 server:
   port: 8080
 swagger:

@@ -17,7 +17,28 @@ services:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
     networks:
-      - springboot-mq-net
+      - springboot-itau-unibanco-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: itauunibancodb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306" # Porta padrão do MySQL
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - springboot-itau-unibanco-net
 
   app:
     image: exerc5-itau-unibanco-image
@@ -28,15 +49,23 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+      mysql:
+        condition: service_healthy
     environment:
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: user
       RABBITMQ_PASS: password
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/itauunibancodb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
     ports:
       - "8080:8080"  # Porta da aplicação Spring Boot
     networks:
-      - springboot-mq-net
+      - springboot-itau-unibanco-net
 
 networks:
-  springboot-mq-net:
+  springboot-itau-unibanco-net:
+
+volumes:
+  mysql-data:
