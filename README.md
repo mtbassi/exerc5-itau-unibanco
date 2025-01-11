@@ -60,7 +60,7 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
 
 4. Acesse a aplicação:
    - **API local**: [`http://localhost:8080`](http://localhost:8080)
-   - **RabbitMQ (Admin)**: [`http://localhost:15672`](http://localhost:15672) (usuário: `guest`, senha: `guest`)
+   - **RabbitMQ (Admin)**: [`http://localhost:15672`](http://localhost:15672) (usuário: `user`, senha: `password`)
 
 5. **API hospedada na AWS ECS**:
    Você também pode acessar a API através do endereço público hospedado na AWS ECS:
@@ -84,7 +84,6 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
     {
       "id": 1,
       "nome": "Produto A",
-      "descricao": "Descrição do produto A",
       "preco": 100.0,
       "categoria": "Categoria A"
     }
@@ -105,7 +104,6 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
   {
     "id": 1,
     "nome": "Produto A",
-    "descricao": "Descrição do produto A",
     "preco": 100.0,
     "categoria": "Categoria A"
   }
@@ -119,7 +117,6 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
   ```json
   {
     "nome": "Produto B",
-    "descricao": "Descrição do produto B",
     "preco": 150.0,
     "categoria": "Categoria B"
   }
@@ -138,7 +135,6 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
   ```json
   {
     "nome": "Produto A Atualizado",
-    "descricao": "Descrição do produto A atualizado",
     "preco": 120.0,
     "categoria": "Categoria A"
   }
