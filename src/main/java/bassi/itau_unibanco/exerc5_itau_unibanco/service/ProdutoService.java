@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -36,10 +37,9 @@ public class ProdutoService {
                 .toList();
     }
 
-    public ProdutoModel listarPeloId(Long id) {
-        return this.produtos.stream()
-                .filter(p -> id.equals(p.getId()))
-                .findFirst()
+    public ProdutoResponse listarPeloId(UUID id) {
+        return this.repository.findById(id)
+                .map(this.mapper::mapToProdutoResponse)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException(id));
     }
 
@@ -58,7 +58,7 @@ public class ProdutoService {
                     this.atualizar(produtoRequest, p);
                     return p;
                 })
-                .orElseThrow(() -> new ProdutoNaoEncontradoException(id));
+                .orElseThrow(() -> new ProdutoNaoEncontradoException(null));
     }
 
     private void atualizar(ProdutoRequest produtoRequest, ProdutoModel produtoAtual) {
@@ -66,6 +66,6 @@ public class ProdutoService {
     }
 
     public void deletar(Long id) {
-        if (!this.produtos.removeIf(p -> id.equals(p.getId()))) throw new ProdutoNaoEncontradoException(id);
+        if (!this.produtos.removeIf(p -> id.equals(p.getId()))) throw new ProdutoNaoEncontradoException(null);
     }
 }

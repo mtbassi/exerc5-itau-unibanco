@@ -18,6 +18,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/produto")
@@ -47,7 +48,7 @@ public class ProdutoController {
             description = "Retorna os detalhes de um produto específico com base no ID fornecido.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Produto encontrado e retornado com sucesso.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoModel.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProdutoResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Requisição com parâmetros inválidos.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
                     @ApiResponse(responseCode = "422", description = "Produto não encontrado para o ID fornecido.",
@@ -57,7 +58,7 @@ public class ProdutoController {
             })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProdutoModel listarPeloId(@PathVariable Long id) {
+    public ProdutoResponse listarPeloId(@PathVariable UUID id) {
         return this.service.listarPeloId(id);
     }
 
