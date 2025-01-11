@@ -1,5 +1,6 @@
 package bassi.itau_unibanco.exerc5_itau_unibanco.listener;
 
+import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
 import bassi.itau_unibanco.exerc5_itau_unibanco.infra.rabbitmq.RabbitMqConfiguration;
 import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class CadastroProdutoListener {
 
     @RabbitListener(queues = RabbitMqConfiguration.CADASTRO_PRODUTO_QUEUE)
-    public void listen(Message<ProdutoModel> message) {
+    public void listen(Message<ProdutoEntity> message) {
         log.info("""
                                                         
                         Evento: Cadastro de Produto

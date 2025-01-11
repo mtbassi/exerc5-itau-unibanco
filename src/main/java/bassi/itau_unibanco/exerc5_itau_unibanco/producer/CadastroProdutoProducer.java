@@ -1,7 +1,7 @@
 package bassi.itau_unibanco.exerc5_itau_unibanco.producer;
 
+import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
 import bassi.itau_unibanco.exerc5_itau_unibanco.infra.rabbitmq.RabbitMqConfiguration;
-import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class CadastroProdutoProducer {
 
     private final RabbitTemplate rabbitTemplate;
 
-    public void sendMessage(ProdutoModel message) {
+    public void sendMessage(ProdutoEntity message) {
         var messageProperties = new MessageProperties();
         messageProperties.setContentType(MediaType.APPLICATION_JSON_VALUE);
         this.rabbitTemplate.send(
@@ -26,7 +26,7 @@ public class CadastroProdutoProducer {
         );
     }
 
-    private String serializeToJson(ProdutoModel data) {
+    private String serializeToJson(ProdutoEntity data) {
         try {
             return new ObjectMapper().writeValueAsString(data);
         } catch (JsonProcessingException e) {
