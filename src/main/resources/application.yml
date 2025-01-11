@@ -1,7 +1,22 @@
 spring:
   application:
-    name: exerc1-itau-unibanco
+    name: exerc3-itau-unibanco
     version: v0.0.1
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:user}
+    password: ${RABBITMQ_PASS:password}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 1000
+          multiplier: 2.0
+          max-interval: 5000
+server:
+  port: 8080
 swagger:
   application:
     name: Produto MS - Itaú Unibanco
