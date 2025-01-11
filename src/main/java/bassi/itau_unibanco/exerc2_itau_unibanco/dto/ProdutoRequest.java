@@ -1,6 +1,6 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.dto;
+package bassi.itau_unibanco.exerc2_itau_unibanco.dto;
 
-import bassi.itau_unibanco.exerc1_itau_unibanco.util.BigDecimalTwoDecimalDeserializer;
+import bassi.itau_unibanco.exerc2_itau_unibanco.util.BigDecimalTwoDecimalDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

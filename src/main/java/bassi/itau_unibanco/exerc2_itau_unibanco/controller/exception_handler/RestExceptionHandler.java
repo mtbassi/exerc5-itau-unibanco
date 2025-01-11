@@ -1,6 +1,6 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.controller.exception_handler;
+package bassi.itau_unibanco.exerc2_itau_unibanco.controller.exception_handler;
 
-import bassi.itau_unibanco.exerc1_itau_unibanco.exception.ProdutoException;
+import bassi.itau_unibanco.exerc2_itau_unibanco.exception.ProdutoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;

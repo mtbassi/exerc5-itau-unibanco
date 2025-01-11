@@ -1,4 +1,4 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.model;
+package bassi.itau_unibanco.exerc2_itau_unibanco.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

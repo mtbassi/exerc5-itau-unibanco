@@ -1,4 +1,4 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.util;
+package bassi.itau_unibanco.exerc2_itau_unibanco.util;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

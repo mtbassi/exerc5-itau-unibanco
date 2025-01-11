@@ -1,8 +1,8 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.controller;
+package bassi.itau_unibanco.exerc2_itau_unibanco.controller;
 
-import bassi.itau_unibanco.exerc1_itau_unibanco.dto.ProdutoRequest;
-import bassi.itau_unibanco.exerc1_itau_unibanco.model.ProdutoModel;
-import bassi.itau_unibanco.exerc1_itau_unibanco.service.ProdutoService;
+import bassi.itau_unibanco.exerc2_itau_unibanco.dto.ProdutoRequest;
+import bassi.itau_unibanco.exerc2_itau_unibanco.model.ProdutoModel;
+import bassi.itau_unibanco.exerc2_itau_unibanco.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

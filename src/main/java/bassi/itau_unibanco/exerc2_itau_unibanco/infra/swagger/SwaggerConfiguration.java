@@ -1,4 +1,4 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.infra.swagger;
+package bassi.itau_unibanco.exerc2_itau_unibanco.infra.swagger;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;

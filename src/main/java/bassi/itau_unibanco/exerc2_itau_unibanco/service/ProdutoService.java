@@ -1,9 +1,9 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.service;
+package bassi.itau_unibanco.exerc2_itau_unibanco.service;
 
-import bassi.itau_unibanco.exerc1_itau_unibanco.dto.ProdutoRequest;
-import bassi.itau_unibanco.exerc1_itau_unibanco.exception.ProdutoNaoEncontradoException;
-import bassi.itau_unibanco.exerc1_itau_unibanco.mapper.ProdutoMapper;
-import bassi.itau_unibanco.exerc1_itau_unibanco.model.ProdutoModel;
+import bassi.itau_unibanco.exerc2_itau_unibanco.dto.ProdutoRequest;
+import bassi.itau_unibanco.exerc2_itau_unibanco.exception.ProdutoNaoEncontradoException;
+import bassi.itau_unibanco.exerc2_itau_unibanco.mapper.ProdutoMapper;
+import bassi.itau_unibanco.exerc2_itau_unibanco.model.ProdutoModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

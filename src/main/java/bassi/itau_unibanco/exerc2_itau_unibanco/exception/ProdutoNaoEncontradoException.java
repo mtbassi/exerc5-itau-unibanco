@@ -1,4 +1,4 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.exception;
+package bassi.itau_unibanco.exerc2_itau_unibanco.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

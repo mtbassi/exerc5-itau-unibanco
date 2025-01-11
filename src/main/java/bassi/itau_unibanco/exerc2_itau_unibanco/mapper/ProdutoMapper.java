@@ -1,7 +1,7 @@
-package bassi.itau_unibanco.exerc1_itau_unibanco.mapper;
+package bassi.itau_unibanco.exerc2_itau_unibanco.mapper;
 
-import bassi.itau_unibanco.exerc1_itau_unibanco.dto.ProdutoRequest;
-import bassi.itau_unibanco.exerc1_itau_unibanco.model.ProdutoModel;
+import bassi.itau_unibanco.exerc2_itau_unibanco.dto.ProdutoRequest;
+import bassi.itau_unibanco.exerc2_itau_unibanco.model.ProdutoModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
