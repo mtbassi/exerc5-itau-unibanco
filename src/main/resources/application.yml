@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: exerc1-itau-unibanco
+    version: v0.0.1
+swagger:
+  application:
+    name: Produto MS - Itaú Unibanco
