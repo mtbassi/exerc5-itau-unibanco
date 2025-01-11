@@ -62,7 +62,12 @@ public class ProdutoService {
         this.mapper.mapToProdutoEntity(produtoRequest, produtoAtual);
     }
 
-    public void deletar(Long id) {
-        if (!this.produtos.removeIf(p -> id.equals(p.getId()))) throw new ProdutoNaoEncontradoException(null);
+    public void deletar(UUID id) {
+        this.repository.findById(id).ifPresentOrElse(
+                this.repository::delete,
+                () -> {
+                    throw new ProdutoNaoEncontradoException(id);
+                }
+        );
     }
 }

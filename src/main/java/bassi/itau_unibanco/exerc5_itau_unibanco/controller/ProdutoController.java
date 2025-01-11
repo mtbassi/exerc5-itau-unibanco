@@ -111,7 +111,7 @@ public class ProdutoController {
             })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletar(@PathVariable Long id) {
+    public void deletar(@PathVariable UUID id) {
         this.service.deletar(id);
     }
 }
