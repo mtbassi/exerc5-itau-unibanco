@@ -5,6 +5,7 @@ import bassi.itau_unibanco.exerc3_itau_unibanco.dto.ProdutoStub;
 import bassi.itau_unibanco.exerc3_itau_unibanco.exception.ProdutoNaoEncontradoException;
 import bassi.itau_unibanco.exerc3_itau_unibanco.mapper.ProdutoMapper;
 import bassi.itau_unibanco.exerc3_itau_unibanco.model.ProdutoModel;
+import bassi.itau_unibanco.exerc3_itau_unibanco.producer.CadastroProdutoProducer;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -48,13 +50,17 @@ class ProdutoServiceTest {
     @Spy
     private final ProdutoMapper mapper = Mappers.getMapper(ProdutoMapper.class);
 
+    @Mock
+    private CadastroProdutoProducer producer;
+
     @BeforeEach
     void setUp() {
         this.service = Mockito.mock(
                 ProdutoService.class,
                 withSettings().useConstructor(
                                 produtos,
-                                mapper
+                                mapper,
+                                producer
                         )
                         .defaultAnswer(Mockito.CALLS_REAL_METHODS)
         );
@@ -101,6 +107,8 @@ class ProdutoServiceTest {
     @Description("Este teste verifica se o serviço de produtos consegue cadastrar um novo produto e retorna o produto com ID gerado corretamente.")
     @DisplayName("Deve cadastrar produto e retornar produto com ID.")
     void cadastrarProduto_DeveRetornarProdutoComIdCadastrado() {
+        doNothing().when(this.producer).sendMessage(any(ProdutoModel.class));
+
         var result = Assertions.assertDoesNotThrow(() -> this.service.cadastrar(
                 ProdutoStub.buildProdutoRequest("Cartão PF", BigDecimal.valueOf(25.00), "PF")
         ));
@@ -112,7 +120,9 @@ class ProdutoServiceTest {
         assertEquals("PF", result.getCategoria());
 
         verify(this.mapper).mapToProdutoModel(any(ProdutoRequest.class), anyLong());
+        verify(this.producer).sendMessage(any(ProdutoModel.class));
         verifyNoMoreInteractions(this.mapper);
+        verifyNoMoreInteractions(this.producer);
     }
 
     @Test
