@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -68,13 +69,13 @@ class ProdutoControllerTest {
     @Description("Verifica se a listagem de todos os produtos ocorre com sucesso.")
     @DisplayName("Deve listar todos os produtos com sucesso")
     void listarProdutos_DeveRetornarTodosComSucesso() {
-        when(this.service.listar()).thenReturn(List.of(ProdutoStub.valid()));
+        when(this.service.listar()).thenReturn(List.of(ProdutoStub.validProdutoResponse()));
 
         this.mockMvc.perform(get(URI_BASE)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].id").value("1429f29a-a611-4212-8418-39df2e8abe5c"))
                 .andExpect(jsonPath("$[0].nome").value("nome"))
                 .andExpect(jsonPath("$[0].preco").value(10.00))
                 .andExpect(jsonPath("$[0].categoria").value("categoria"));
@@ -125,19 +126,21 @@ class ProdutoControllerTest {
     @Description("Valida o cadastro de um novo produto com informações válidas.")
     @DisplayName("Deve cadastrar produto com sucesso")
     void cadastrarProduto_DeveCriarProdutoComSucesso(String name, ProdutoRequest payload) {
-        var produtoResponse = this.mapper.mapToProdutoModel(payload, 1L);
+        var produtoEntity = this.mapper.mapToProdutoEntity(payload);
+        var id = UUID.randomUUID();
+        produtoEntity.setId(id);
 
-        when(this.service.cadastrar(any(ProdutoRequest.class))).thenReturn(ProdutoStub.toProdutoModel(payload));
+        when(this.service.cadastrar(any(ProdutoRequest.class))).thenReturn(ProdutoStub.toProdutoResponse(payload, id));
 
         this.mockMvc.perform(post(URI_BASE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsBytes(payload))
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(produtoResponse.getId()))
-                .andExpect(jsonPath("$.nome").value(produtoResponse.getNome()))
-                .andExpect(jsonPath("$.preco").value(produtoResponse.getPreco()))
-                .andExpect(jsonPath("$.categoria").value(produtoResponse.getCategoria()));
+                .andExpect(jsonPath("$.id").value(produtoEntity.getId().toString()))
+                .andExpect(jsonPath("$.nome").value(produtoEntity.getNome()))
+                .andExpect(jsonPath("$.preco").value(produtoEntity.getPreco()))
+                .andExpect(jsonPath("$.categoria").value(produtoEntity.getCategoria()));
 
         verify(this.service).cadastrar(any(ProdutoRequest.class));
     }

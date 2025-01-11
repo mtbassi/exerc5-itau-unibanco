@@ -2,10 +2,12 @@ package bassi.itau_unibanco.exerc5_itau_unibanco.service;
 
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoRequest;
 import bassi.itau_unibanco.exerc5_itau_unibanco.dto.ProdutoStub;
+import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
 import bassi.itau_unibanco.exerc5_itau_unibanco.exception.ProdutoNaoEncontradoException;
 import bassi.itau_unibanco.exerc5_itau_unibanco.mapper.ProdutoMapper;
 import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import bassi.itau_unibanco.exerc5_itau_unibanco.producer.CadastroProdutoProducer;
+import bassi.itau_unibanco.exerc5_itau_unibanco.repository.ProdutoRepository;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -26,13 +28,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @Epic("Gestão de Produtos")
@@ -47,6 +49,9 @@ class ProdutoServiceTest {
             ProdutoStub.buildProdutoModel(20L, "Empréstimo PJ", BigDecimal.valueOf(300.00), "PJ")
     ));
 
+    @Mock
+    private ProdutoRepository repository;
+
     @Spy
     private final ProdutoMapper mapper = Mappers.getMapper(ProdutoMapper.class);
 
@@ -59,6 +64,7 @@ class ProdutoServiceTest {
                 ProdutoService.class,
                 withSettings().useConstructor(
                                 produtos,
+                                repository,
                                 mapper,
                                 producer
                         )
@@ -71,6 +77,11 @@ class ProdutoServiceTest {
     @Description("Este teste verifica se o serviço de produtos retorna corretamente uma lista de produtos cadastrados.")
     @DisplayName("Deve retornar todos os produtos cadastrados.")
     void listarProdutos_DeveRetornarListaDeProdutos() {
+        var produtosList = List.of(
+                ProdutoStub.buildProdutoEntity(UUID.randomUUID(), "Cartão PJ", BigDecimal.TEN, "PJ"),
+                ProdutoStub.buildProdutoEntity(UUID.randomUUID(), "Empréstimo PJ", BigDecimal.TEN, "PJ")
+        );
+        when(this.repository.findAll()).thenReturn(produtosList);
         var result = Assertions.assertDoesNotThrow(() -> this.service.listar());
 
         assertFalse(result.isEmpty());
@@ -79,6 +90,11 @@ class ProdutoServiceTest {
                 HasPropertyWithValue.hasProperty("nome", is("Cartão PJ")),
                 HasPropertyWithValue.hasProperty("nome", is("Empréstimo PJ"))
         ));
+
+        verify(this.repository).findAll();
+        verify(this.mapper, times(2)).mapToProdutoResponse(any(ProdutoEntity.class));
+        verifyNoMoreInteractions(this.repository);
+        verifyNoMoreInteractions(this.mapper);
     }
 
     @Test
@@ -107,21 +123,25 @@ class ProdutoServiceTest {
     @Description("Este teste verifica se o serviço de produtos consegue cadastrar um novo produto e retorna o produto com ID gerado corretamente.")
     @DisplayName("Deve cadastrar produto e retornar produto com ID.")
     void cadastrarProduto_DeveRetornarProdutoComIdCadastrado() {
-        doNothing().when(this.producer).sendMessage(any(ProdutoModel.class));
+        doNothing().when(this.producer).sendMessage(any(ProdutoEntity.class));
+        var produtoRequest = ProdutoStub.buildProdutoRequest("Cartão PF", BigDecimal.valueOf(25.00), "PF");
+        var id = UUID.randomUUID();
+        when(this.repository.save(any(ProdutoEntity.class))).thenReturn(ProdutoStub.toProdutoEntity(produtoRequest, id));
 
-        var result = Assertions.assertDoesNotThrow(() -> this.service.cadastrar(
-                ProdutoStub.buildProdutoRequest("Cartão PF", BigDecimal.valueOf(25.00), "PF")
-        ));
+        var result = Assertions.assertDoesNotThrow(() -> this.service.cadastrar(produtoRequest));
 
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Cartão PF", result.getNome());
-        assertEquals(BigDecimal.valueOf(25.00), result.getPreco());
-        assertEquals("PF", result.getCategoria());
+        assertEquals(id, result.id());
+        assertEquals("Cartão PF", result.nome());
+        assertEquals(BigDecimal.valueOf(25.00), result.preco());
+        assertEquals("PF", result.categoria());
 
-        verify(this.mapper).mapToProdutoModel(any(ProdutoRequest.class), anyLong());
-        verify(this.producer).sendMessage(any(ProdutoModel.class));
+        verify(this.mapper).mapToProdutoEntity(any(ProdutoRequest.class));
+        verify(this.mapper).mapToProdutoResponse(any(ProdutoEntity.class));
+        verify(this.repository).save(any(ProdutoEntity.class));
+        verify(this.producer).sendMessage(any(ProdutoEntity.class));
         verifyNoMoreInteractions(this.mapper);
+        verifyNoMoreInteractions(this.repository);
         verifyNoMoreInteractions(this.producer);
     }
 
