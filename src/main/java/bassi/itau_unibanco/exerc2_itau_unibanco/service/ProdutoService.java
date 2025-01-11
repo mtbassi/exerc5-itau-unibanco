@@ -7,7 +7,6 @@ import bassi.itau_unibanco.exerc2_itau_unibanco.model.ProdutoModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -15,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @RequiredArgsConstructor
 public class ProdutoService {
 
-    private final List<ProdutoModel> produtos = new ArrayList<>();
+    private final List<ProdutoModel> produtos;
 
     private final ProdutoMapper mapper;
 
