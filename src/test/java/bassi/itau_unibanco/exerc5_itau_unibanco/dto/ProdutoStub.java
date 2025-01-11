@@ -22,6 +22,10 @@ public class ProdutoStub {
         return new ProdutoRequest(nome, preco, categoria);
     }
 
+    public static ProdutoResponse buildProdutoResponse(UUID id, String nome, BigDecimal preco, String categoria) {
+        return new ProdutoResponse(id, nome, preco, categoria);
+    }
+
     public static ProdutoModel valid() {
         return new ProdutoModel(1L, "nome", BigDecimal.valueOf(10.00), "categoria");
     }

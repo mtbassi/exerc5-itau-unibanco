@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -89,27 +90,28 @@ class ProdutoControllerTest {
     @Description("Valida a busca de um produto específico por ID válido.")
     @DisplayName("Deve listar produto com sucesso ao fornecer ID válido no path")
     void listarProdutoPorId_DeveRetornarProdutoComSucesso() {
-        when(this.service.listarPeloId(anyLong())).thenReturn(ProdutoStub.valid());
+        when(this.service.listarPeloId(any(UUID.class))).thenReturn(ProdutoStub.validProdutoResponse());
 
-        this.mockMvc.perform(get(URI_BASE.concat("/1"))
+        this.mockMvc.perform(get(URI_BASE.concat("/144f6924-fd91-4d4c-b58f-e27c5d19e15f"))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.id").value("1429f29a-a611-4212-8418-39df2e8abe5c"))
                 .andExpect(jsonPath("$.nome").value("nome"))
                 .andExpect(jsonPath("$.preco").value(10.00))
                 .andExpect(jsonPath("$.categoria").value("categoria"));
 
-        verify(this.service).listarPeloId(anyLong());
+        verify(this.service).listarPeloId(any(UUID.class));
     }
 
     @SneakyThrows
-    @Test
     @Story("Buscar Produto por ID")
     @Description("Valida que a tentativa de buscar um produto com um ID inválido retorna erro conforme esperado.")
-    @DisplayName("Erro esperado ao listar produto com parâmetro \"id\" inválido.")
-    void listarProdutoPorId_DeveFalharQuandoParametroInvalido() {
-        this.mockMvc.perform(get(URI_BASE.concat("/null"))
+    @ParameterizedTest(name = "Busca realizado com ID: {0}")
+    @ValueSource(strings = {"1208", "char", "null"})
+    @DisplayName("Erro esperado ao listar produto com parâmetro ID inválido.")
+    void listarProdutoPorId_DeveFalharQuandoParametroInvalido(String id) {
+        this.mockMvc.perform(get(URI_BASE.concat("/%s".formatted(id)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isBadRequest())
