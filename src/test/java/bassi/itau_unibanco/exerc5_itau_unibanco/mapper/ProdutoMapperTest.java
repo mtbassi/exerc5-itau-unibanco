@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Epic("Mapeamento de Objetos")
-@Feature("Mapeamento para ProdutoModel")
+@Feature("Mapeamento para ProdutoEntity")
 @SpringBootTest
 @ActiveProfiles({"test"})
 class ProdutoMapperTest {
@@ -29,9 +29,9 @@ class ProdutoMapperTest {
 
     @Test
     @Story("Atualizar ProdutoEntity com ProdutoRequest")
-    @Description("Valida se o método mapToProdutoEntity atualiza corretamente um ProdutoModel existente com informações de um ProdutoRequest.")
-    @DisplayName("Deve atualizar ProdutoModel com informações do ProdutoRequest.")
-    void atualizarProdutoModelComProdutoRequest_DeveAtualizarCorretamente() {
+    @Description("Valida se o método mapToProdutoEntity atualiza corretamente um ProdutoEntity existente com informações de um ProdutoRequest.")
+    @DisplayName("Deve atualizar ProdutoEntity com informações do ProdutoRequest.")
+    void atualizarProdutoEntityComProdutoRequest_DeveAtualizarCorretamente() {
         var produtoRequest = ProdutoStub.buildProdutoRequest("Cartão PJ", BigDecimal.valueOf(50.00), "PJ");
         var produtoEntity = ProdutoStub.buildProdutoEntity(UUID.fromString("850db7cf-d747-4dff-8041-426885842420"), "Cartão PF", BigDecimal.valueOf(25.00), "PF");
         Assertions.assertDoesNotThrow(() -> this.mapper.mapToProdutoEntity(produtoRequest, produtoEntity));
