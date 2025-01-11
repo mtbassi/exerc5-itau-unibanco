@@ -279,7 +279,7 @@ class ProdutoControllerTest {
     void atualizarProduto_DeveLancarErroComPathVariableInvalido(String id) {
         this.mockMvc.perform(put(URI_BASE.concat("/%s".formatted(id)))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(this.objectMapper.writeValueAsBytes(ProdutoStub.valid()))
+                        .content(this.objectMapper.writeValueAsBytes(ProdutoStub.validProdutoResquest()))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.title").value("A solicitação contém parâmetro inválido."))

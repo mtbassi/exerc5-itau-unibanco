@@ -1,7 +1,6 @@
 package bassi.itau_unibanco.exerc5_itau_unibanco.dto;
 
 import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
-import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
@@ -9,10 +8,6 @@ import java.util.UUID;
 
 @UtilityClass
 public class ProdutoStub {
-
-    public static ProdutoModel buildProdutoModel(Long id, String nome, BigDecimal preco, String categoria) {
-        return new ProdutoModel(id, nome, preco, categoria);
-    }
 
     public static ProdutoEntity buildProdutoEntity(UUID id, String nome, BigDecimal preco, String categoria) {
         return new ProdutoEntity(id, nome, preco, categoria);
@@ -26,8 +21,8 @@ public class ProdutoStub {
         return new ProdutoResponse(id, nome, preco, categoria);
     }
 
-    public static ProdutoModel valid() {
-        return new ProdutoModel(1L, "nome", BigDecimal.valueOf(10.00), "categoria");
+    public static ProdutoRequest validProdutoResquest() {
+        return new ProdutoRequest("nome", BigDecimal.valueOf(10.00), "categoria");
     }
 
     public static ProdutoResponse validProdutoResponse() {
