@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: exerc5-itau-unibanco
+    version: v0.0.1
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    hikari:
+      maximum-pool-size: 1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
+server:
+  port: 8081
+swagger:
+  application:
+    name: Produto MS - Itaú Unibanco (Test)
