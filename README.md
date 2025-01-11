@@ -31,7 +31,6 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
 - **Java 17+**
 - **Spring Boot 3+**
 - **Docker** e **Docker Compose**
-- **MySQL**
 - **RabbitMQ**
 - Conta na AWS (opcional para deploy em ECS ou Lambda)
 
