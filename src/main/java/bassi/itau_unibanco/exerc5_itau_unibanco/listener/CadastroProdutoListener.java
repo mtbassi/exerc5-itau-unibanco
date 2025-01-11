@@ -2,7 +2,6 @@ package bassi.itau_unibanco.exerc5_itau_unibanco.listener;
 
 import bassi.itau_unibanco.exerc5_itau_unibanco.entity.ProdutoEntity;
 import bassi.itau_unibanco.exerc5_itau_unibanco.infra.rabbitmq.RabbitMqConfiguration;
-import bassi.itau_unibanco.exerc5_itau_unibanco.model.ProdutoModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.Message;
