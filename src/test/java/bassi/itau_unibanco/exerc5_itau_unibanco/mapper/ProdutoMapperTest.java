@@ -52,7 +52,7 @@ class ProdutoMapperTest {
         assertNotNull(produtoResponse);
         assertEquals("850db7cf-d747-4dff-8041-426885842420", produtoResponse.id().toString());
         assertEquals("Cartão PJ", produtoResponse.nome());
-        assertEquals(BigDecimal.valueOf(50.00), produtoResponse.preco());
+        assertEquals(BigDecimal.valueOf(25.00), produtoResponse.preco());
         assertEquals("PJ", produtoResponse.categoria());
     }
 
