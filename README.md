@@ -68,10 +68,6 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
    - **API local**: [`http://localhost:8080`](http://localhost:8080)
    - **RabbitMQ (Admin)**: [`http://localhost:15672`](http://localhost:15672) (usuário: `user`, senha: `password`)
 
-5. **API hospedada na AWS ECS**:
-   Você também pode acessar a API através do endereço público hospedado na AWS ECS:
-   - **API Pública**: [`http://15.229.13.93:8080`](http://15.229.13.93:8080)
-
 ---
 
 ## Endpoints da API
