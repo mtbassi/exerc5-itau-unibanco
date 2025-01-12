@@ -73,7 +73,7 @@ public class ProdutoController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class)))
             })
-    @GetMapping
+    @GetMapping("/busca")
     @ResponseStatus(HttpStatus.OK)
     public List<ProdutoResponse> listagemPersonalizada(
             @RequestParam(required = false) String nome,
