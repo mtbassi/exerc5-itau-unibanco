@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,14 @@ public class ProdutoService {
                 .orElseThrow(() -> new ProdutoNaoEncontradoException(id));
     }
 
+    @Transactional(readOnly = true)
+    public List<ProdutoResponse> listagemPersonalizada(String nome, BigDecimal preco, String categoria) {
+        return this.repository.listagemPersonalizada(nome, preco, categoria)
+                .stream()
+                .map(this.mapper::mapToProdutoResponse)
+                .toList();
+    }
+
     @Transactional
     public ProdutoResponse cadastrar(ProdutoRequest produtoRequest) {
         var entity = this.repository.save(this.mapper.mapToProdutoEntity(produtoRequest));
@@ -59,6 +68,7 @@ public class ProdutoService {
         this.mapper.mapToProdutoEntity(produtoRequest, produtoAtual);
     }
 
+    @Transactional
     public void deletar(UUID id) {
         this.repository.findById(id).ifPresentOrElse(
                 this.repository::delete,

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +61,27 @@ public class ProdutoController {
         return this.service.listarPeloId(id);
     }
 
+    @Operation(summary = "Consultar produto por nome, preço e categoria",
+            description = "Retorna os detalhes de uma lista de produtos com base no nome, preço e categoria fornecidos.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de produtos retornada com sucesso.",
+                            content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProdutoResponse.class)))),
+                    @ApiResponse(responseCode = "400", description = "Requisição com parâmetros inválidos.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
+                    @ApiResponse(responseCode = "422", description = "Produto não encontrado para o ID fornecido.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class))),
+                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProblemDetail.class)))
+            })
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProdutoResponse> listagemPersonalizada(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) BigDecimal preco,
+            @RequestParam(required = false) String categoria
+    ) {
+        return this.service.listagemPersonalizada(nome, preco, categoria);
+    }
 
     @Operation(summary = "Cadastrar novo produto",
             description = "Realiza o cadastro de um novo produto utilizando os dados fornecidos no corpo da requisição.",
