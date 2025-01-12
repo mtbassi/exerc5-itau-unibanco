@@ -111,6 +111,35 @@ class ProdutoServiceTest {
     }
 
     @Test
+    @Story("Testa a busca de produtos por nome, categoria e preço")
+    @Description("Valida a busca de uma lista de produtos por nome, categoria e preço.")
+    @DisplayName("Deve listar produtos com sucesso ao fornecer nome, categoria e preço")
+    void listarProdutosPorNomeCategoriaEPreco_DeveRetornarListaDeProdutos() {
+        var produtoEntities = List.of(
+                ProdutoStub.buildProdutoEntity(UUID.fromString("32c6fc74-42f1-4edd-a6fa-3e137512cdcc"), "Cartão PJ", BigDecimal.TEN, "PJ"),
+                ProdutoStub.buildProdutoEntity(UUID.fromString("1f0ab96e-a2de-4005-9013-95ff12aa89cc"), "Empréstimo PJ", BigDecimal.TEN, "PJ")
+        );
+        var resultadoEsperado = List.of(
+                ProdutoStub.buildProdutoResponse(UUID.fromString("32c6fc74-42f1-4edd-a6fa-3e137512cdcc"), "Cartão PJ", BigDecimal.TEN, "PJ"),
+                ProdutoStub.buildProdutoResponse(UUID.fromString("1f0ab96e-a2de-4005-9013-95ff12aa89cc"), "Empréstimo PJ", BigDecimal.TEN, "PJ")
+        );
+
+        when(this.repository.listagemPersonalizada(anyString(), any(BigDecimal.class), anyString()))
+                .thenReturn(produtoEntities);
+
+        var result = Assertions.assertDoesNotThrow(() -> this.service.listagemPersonalizada("nome", BigDecimal.TEN, "categoria"));
+
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        assertEquals(resultadoEsperado, result);
+
+        verify(this.repository).listagemPersonalizada(anyString(), any(BigDecimal.class), anyString());
+        verify(this.mapper, times(2)).mapToProdutoResponse(any(ProdutoEntity.class));
+        verifyNoMoreInteractions(this.repository);
+        verifyNoMoreInteractions(this.mapper);
+    }
+
+    @Test
     @Story("Testar o cadastro de produto")
     @Description("Este teste verifica se o serviço de produtos consegue cadastrar um novo produto e retorna o produto com ID gerado corretamente.")
     @DisplayName("Deve cadastrar produto e retornar produto com ID.")

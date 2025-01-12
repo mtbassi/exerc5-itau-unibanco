@@ -24,6 +24,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -118,6 +120,50 @@ class ProdutoControllerTest {
                 .andExpect(jsonPath("$.invalid-param.name").value("id"));
 
         verifyNoInteractions(this.service);
+    }
+
+    @SneakyThrows
+    @ParameterizedTest
+    @MethodSource("buildBuscaProdutosPorNomeCategoriaEPreco")
+    @Story("Buscar Produto por nome, categoria e preço")
+    @Description("Valida a busca de uma lista de produtos por nome, categoria e preço.")
+    @DisplayName("Deve listar produtos com sucesso ao fornecer nome, categoria e preço")
+    void buscaProdutosPorNomeCategoriaEPreco_DeveRetornarProdutosComSucesso(MultiValueMap<String, String> parametros) {
+        when(this.service.listagemPersonalizada(anyString(), any(BigDecimal.class), anyString()))
+                .thenReturn(List.of(ProdutoStub.validProdutoResponse()));
+
+        this.mockMvc.perform(get(URI_BASE.concat("/busca"))
+                        .queryParams(parametros)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
+
+        verify(this.service).listagemPersonalizada(
+                nullable(String.class),
+                nullable(BigDecimal.class),
+                nullable(String.class)
+        );
+    }
+
+    private static Stream<Arguments> buildBuscaProdutosPorNomeCategoriaEPreco() {
+        return Stream.of(
+                Arguments.of(new LinkedMultiValueMap<String, String>() {{
+                    add("nome", "ProdutoA");
+                    add("categoria", "Eletrônicos");
+                    add("preco", "100");
+                }}),
+                Arguments.of(new LinkedMultiValueMap<String, String>() {{
+                    add("nome", "ProdutoA");
+                }}),
+                Arguments.of(new LinkedMultiValueMap<String, String>() {{
+                    add("categoria", "Eletrônicos");
+                }}),
+                Arguments.of(new LinkedMultiValueMap<String, String>() {{
+                    add("preco", "100");
+                }}),
+                Arguments.of(new LinkedMultiValueMap<String, String>() {
+                })
+        );
     }
 
     @SneakyThrows
