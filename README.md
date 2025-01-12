@@ -6,8 +6,9 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
 1. **CRUD de Produtos**: API RESTful para gerenciar produtos.
 2. **Testes Automatizados**: Testes unitários com JUnit e Mockito.
 3. **Mensageria**: Publicação de mensagens em RabbitMQ para novos produtos.
-4. **Escalabilidade**: Configuração para rodar na AWS (ECS ou Lambda).
-5. **Adesão a SOLID**: Código refatorado para boas práticas de design.
+4. **Integração com MySQL:**: Banco de dados com migrações Flyway..
+5. **Escalabilidade**: Configuração para rodar na AWS (ECS ou Lambda).
+6. **Adesão a SOLID**: Código refatorado para boas práticas de design.
 
 ---
 
@@ -25,12 +26,17 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
 - Consumidor para ler mensagens da fila e registrar logs.
 - Configuração para execução em **AWS ECS** ou **AWS Lambda**.
 
+### Exercício 5: Banco de Dados e Filtros
+- Integração com banco de dados **MySQL** utilizando **Flyway**.
+- ndpoint para buscar produtos com filtros (nome, categoria, preço).
+
 ---
 
 ## Requisitos
 - **Java 17+**
 - **Spring Boot 3+**
 - **Docker** e **Docker Compose**
+- **MySQL**
 - **RabbitMQ**
 - Conta na AWS (opcional para deploy em ECS ou Lambda)
 
@@ -108,8 +114,40 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
     "categoria": "Categoria A"
   }
   ```
+### 3. **Consultar produto por nome, preço e categoria**
+- **URL**: `/v1/produto/busca`
+- **Método**: `GET`
+- **Descrição**: Retorna os detalhes de uma lista de produtos com base no nome, preço e categoria fornecidos. Os parâmetros são opcionais, permitindo consultas mais flexíveis.
+- **Parâmetros**:
+  - `nome` (opcional): Nome do produto para filtro.
+  - `preco` (opcional): Preço do produto para filtro.
+  - `categoria` (opcional): Categoria do produto para filtro.
+- **Resposta**:
+  - **200 OK**: Lista de produtos que atendem aos critérios fornecidos.
+  - **400 Bad Request**: Parâmetros inválidos.
+  - **422 Unprocessable Entity**: Nenhum produto encontrado para os critérios fornecidos.
+  - **500 Internal Server Error**: Erro no servidor.
+- **Exemplo de resposta**:
+  ```json
+  [
+    {
+      "id": 1,
+      "nome": "Produto A",
+      "descricao": "Descrição do produto A",
+      "preco": 100.0,
+      "categoria": "Categoria A"
+    },
+    {
+      "id": 2,
+      "nome": "Produto B",
+      "descricao": "Descrição do produto B",
+      "preco": 150.0,
+      "categoria": "Categoria B"
+    }
+  ]
+  ```
 
-### 3. **Cadastrar novo produto**
+### 4. **Cadastrar novo produto**
 - **URL**: `/v1/produto`
 - **Método**: `POST`
 - **Descrição**: Realiza o cadastro de um novo produto utilizando os dados fornecidos no corpo da requisição.
@@ -127,7 +165,7 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
   - **422 Unprocessable Entity**: Dados inválidos ou ausentes no cadastro.
   - **500 Internal Server Error**: Erro no servidor.
 
-### 4. **Atualizar produto existente**
+### 5. **Atualizar produto existente**
 - **URL**: `/v1/produto/{id}`
 - **Método**: `PUT`
 - **Descrição**: Atualiza as informações de um produto com base no ID fornecido.
@@ -145,7 +183,7 @@ Este repositório contém a implementação de um microsserviço desenvolvido em
   - **422 Unprocessable Entity**: Produto não encontrado para o ID fornecido.
   - **500 Internal Server Error**: Erro no servidor.
 
-### 5. **Deletar produto por ID**
+### 6. **Deletar produto por ID**
 - **URL**: `/v1/produto/{id}`
 - **Método**: `DELETE`
 - **Descrição**: Remove um produto do sistema utilizando o ID fornecido na requisição.
